@@ -28,8 +28,9 @@ Note: **This is a scrubbed version of my private repo, meaning: there will be no
 - Stop trade after a percentage of value increase
 - Stop trade after a pre-set number fo retries
 - Increase the gas limits after each attempt
-- Automatically calculate the minimum amount of tokens required to execute a trade, which includes the gas and number of attempts.
-- Insert in a token at the T0th second of the IDO, via CLI
+- Automatically calculate the minimum amount of tokens required to execute a trade, which includes the gas and number of
+  attempts.
+- Snipe a token at the very first moment of an IDO launch via CLI
 
 ## Building from Source
 
