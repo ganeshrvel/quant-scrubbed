@@ -7,14 +7,15 @@
 
 # Introduction
 Quant is an auto-trading and sniping platform built using the Rust language. It is capable of sniping a token at the very first block itself. 
+
 Note: **This is a scrubbed version of my private repo, meaning: there will be no git history**.
 
-# Be warned!
+### Be warned!
  - Stay within your limits, sniping a token is a very risky gamble. Remember, don't invest more than what you could afford to lose
  - DYOR, Don't invest your money into Honeypots. You know how it goes
  - Always start with a smaller amount
 
-# Features
+### Features
   - Snipe at the very first block itself
   - Separate trade flow for Buy, Sell and Buy and Dump
   - CLI to choose the mode of the trade
