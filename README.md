@@ -1,4 +1,4 @@
-# Quant | Blockchain autotrading and sniping platfrorm [rust]
+# Quant | Blockchain auto-trading and sniping platform [rust]
 
 - Author: [Ganesh Rathinavel](https://www.linkedin.com/in/ganeshrvel "Ganesh Rathinavel")
 - License: [GPLv3](https://github.com/ganeshrvel/quant-scrubbed/blob/master/LICENSE "GPLv3")
