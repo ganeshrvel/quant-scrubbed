@@ -1,0 +1,865 @@
+# WARNING:
+## DO NOT commit *CONFIG.yaml* file
+
+settings:
+  exchanges:
+    - exchange:
+
+        #### Pancakeswap sniping details
+        # (ENUM: "pancakeswap")
+        name: pancakeswap
+        networks:
+          - network:
+              #### BSC Mainnet sniping details
+              # (ENUM: "mainnet"|"testnet")
+              name: mainnet
+              #### Commonly used token contracts:
+              #   WBNB (Wrapped BNB): 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c
+              #   BUSD (Binance USD): 0x4Fabb145d64652a948d72533023f6E7A623C7C53
+              #   USDT (Tether USD): 0x55d398326f99059ff775485246999027b3197955
+              #   SWAPZ (SWAPZ.app): 0xd522a1dce1ca4b138dda042a78672307eb124cc2
+
+              # Pancake factory contract
+              factory: 0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73
+
+              # Pancake router contract
+              router: 0x10ED43C718714eb63d5aA57B78B54704E256024E
+
+              # usd token contract to compare the price
+              usd_token_contract: 0x4Fabb145d64652a948d72533023f6E7A623C7C53
+
+              # native token contract to compare the price (BNB,ETH etc..)
+              native_token_contract: 0xB8c77482e45F1F44dE1745F52C74426C631bDD52
+
+              # native token symbol. Example: (BNB,ETH etc..)
+              native_token_symbol: BNB
+
+              # List of providers for listening to the crypto network
+              providers:
+                - provider:
+                    name: "chainstack bsc account"
+                    api: "wss://xxxxxx:xxxxxx@ws-xxxxxx-xxxxxx.p2pify.com"
+
+                    ### Option<String>: Basic authorization username
+                    # both [username] and [password] are mandotory if Basic authorization has to be used
+                    # leave this field empty if not used
+                    username: "xxxxxxxx"
+
+                    ### Option<String>: Basic authorization Password
+                    # both [username] and [password] are mandotory if Basic authorization has to be used
+                    # leave this field empty if not used
+                    password: "xxxxxxxx"
+
+                    # (ENUM: "wss")
+                    protocol: "wss"
+
+                - provider:
+                    name: "ankr account#1"
+                    api: "wss://apis.ankr.com/wss/xxxxxxxx/xxxxxxxx/binance/full/main"
+
+                    # (ENUM: "wss")
+                    protocol: "wss"
+
+                - provider:
+                    name: "infura mainnet account#1"
+                    api: "wss://mainnet.infura.io/ws/v3/xxxxxxxx"
+
+                    # (ENUM: "wss")
+                    protocol: "wss"
+
+              # Checks whether the account has enough gas fees or not
+              check_gas_fees: true
+
+              feature:
+                trades:
+                  # <------ buy start -------->
+                  - trade:
+
+                      #### Buy order information
+                      # (ENUM: "buy"|"sell")
+                      name: buy
+
+                      #### (INTEGER) Transaction deadline
+                      # After how many seconds should the transaction timeout incase the swap did not complete
+                      # unit is in milliseconds
+                      # eg: 600000 #(1000 * 60 * 10 = 10 mins), 300000 (1000 * 60 * 5 = 5 mins),
+                      tx_timeout_in_ms: 60000 # 1 min
+
+                      ##### (Option<String>) "APPROVE" Gas fee (GWEI) to make the token transaction
+                      # Gas price refers to the amount of Ether/BNB you are willing to pay for every unit of gas, and this is usually measured in 'gwei', to approve the [token_out_contract].
+                      # This is only done once for approving the token
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Recommended value for sniping or early buy is 15+
+                      # Minimum is "5". The more is better.
+                      # To turn off Approve checks and Auto approve, leave this field empty
+                      approve_gas_price: "5"
+
+                      ##### (Option<INTEGER>) "APPROVE" Gas limit to make the token transaction.
+                      # Gas limit means the MAXIMUM UNITS of gas that is allowed to be consumed on for approving the [token_out_contract]
+                      # To be used along with [approve_gas_price]
+                      # This field is mandatory when [approve_gas_price] is enabled
+                      # eg: 210000, 250000, 300000
+                      # It CANNOT be a decimal
+                      # Minimum limit is 210000. The more is better.
+                      # Recommended Minimum value: 500000
+                      approve_gas_limit: 200000
+
+                      #### (ADDRESS) The BASE token contract that you would like to exchange
+                      # The token_in_contract could be some STABLE coin which you own
+                      # eg: Contract address of WNBNB (0xxxxxxxxxxxxx), BNB (0xxxxxxxxxxxxx)
+                      token_in_contract: 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c
+
+                      #### (STRING) Symbol for the token_in_contract
+                      # We require this field to avoid fetching the symbol from the network thus reducing an extra network request
+                      # eg: WBNB
+                      token_in_symbol: "WBNB"
+
+                      #### (Option<ADDRESS>) Token contract to BUY
+                      # For sniping the token leave this field empty, you will be prompted for the input via the CLI
+                      # The token_out_contract could be some SHIT coin that you would like to purchase
+                      # eg: Contract address of NFT (0xxxxxxxxxxxxx), DOGE (0xxxxxxxxxxxxx). SWAPZ (0xxxxxxxxxxxxx)
+                      token_out_contract: 0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82
+
+                      #### (STRING) Symbol for the token_out_contract
+                      # We require this field to avoid fetching the symbol from the network thus reducing an extra network request
+                      # eg: NFT, DOGE. SWAPZ
+                      token_out_symbol: "CAKE"
+
+                      ### (Bool) Is the [token_out_contract] deflationary?
+                      # allowed values: true or false
+                      is_token_out_deflationary: false
+
+                      #### (STRING) Amount of tokens you would like to spend on making the purchase.
+                      # unit is in token_in
+                      # eg: "2.0", "44.0", "7000.0", "5.0005", "0.000001"
+                      amount_of_token_in: "0.00004"
+
+                      #### (INTEGER) (PERCENTAGE) of slippage to make the purchase.
+                      # It should be a positive integer
+                      # eg: 1, 5, 10
+                      # It CANNOT be a decimal
+                      # Recommended value for sniping or early buy is 30+
+                      slippage: 1
+
+                      ##### (String) Gas fee (GWEI) to carry out the trade.
+                      # Gas price refers to the amount of Ether/BNB you are willing to pay for every unit of gas, and this is usually measured in 'gwei'
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Recommended value for sniping or early buy is 15+
+                      # Minimum is 5. The more is better.
+                      gas_price: "5"
+
+                      ##### (INTEGER) Gas limit to make the purchase.
+                      # Gas limit means the MAXIMUM UNITS of gas that is allowed to be consumed on a transaction
+                      # eg: 210000, 250000, 300000
+                      # It CANNOT be a decimal
+                      # Minimum limit is 210000. The more is better.
+                      # Recommended Minimum value: 500000
+                      gas_limit: 300000
+
+                      ##### (Option<Integer>) (Percentage) of gas fees to be increased while making retry attempts.
+                      # Sometimes to carry out a transaction the gas fees wouldn't be enough. So we could keep increasing the gas price on every retry.
+                      # eg: 0, 1, 5, 10, 25, 100
+                      # it should be a POSITIVE integer
+                      # It CANNOT be a decimal
+                      # To keep the gas price fixed, leave this field empty
+                      perc_increase_gas_price: 2
+
+                      ##### (Option<String>) Max Gas price incase we setincase we set [perc_increase_gas_price]
+                      # Maximum value of gas price allowed in case we activate "increased gas price"
+                      # [max_gas_price] should be only used along with [perc_increase_gas_price]
+                      # [max_gas_price] should be greater than or equal to [gas_price]
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Unit is in 'gwei'
+                      max_gas_price: "50"
+
+                      ##### (Optional<INTEGER>) Number of retry attempts to carry out in case of a failed transaction
+                      # We will keep retrying [retry_attempts] number of times before stopping further attempts
+                      # eg: 5, 10, 25
+                      # It CANNOT be a decimal
+                      # For unlimited retries, leave this field empty
+                      retry_attempts: 2
+
+                      ##### (Option<INTEGER>) time interval between each [retry_attempts] in milliseconds
+                      # We will keep retrying [retry_attempts] number of times before stopping further attempts
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      time_between_retries_in_ms: 1000
+
+                      ##### (Option<INTEGER>) Sets a delay before making the first transaction attempt.
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      wait_time_before_first_tx_attempt_in_ms: 2000
+
+                      ##### (Option<INTEGER>) Sets a max allowed time until which the trade is allowed to happen
+                      # this is the time difference between the moment 'the minimum liquidity' is hit and before the next transaction
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      max_allowed_time_for_trading_in_ms: 15000
+
+                      #### (Option<STRING>) Minimum liquidity required to be added in the pair address to make the purchase.
+                      # unit is in BNB
+                      # eg: "2.0", "4.0", "7.0", "5.0005"," 0.000001"
+                      # To skip the minimum liquidity check leave the field empty
+                      min_liquidity_required: "1"
+
+                      #### (Option<STRING>) The price at which the trading should be triggered
+                      # unit is in BNB
+                      # eg: "2.0", "4.0", "7.0", "5.0005", "0.000001"
+                      # For instant trading leave this field empty
+                      trade_at_price:
+
+                      #### (Option<STRING>) The price above which the trade should be put on hold.
+                      # This is a safety measure to avoid losing money
+                      # unit is in BNB
+                      # eg: "2.0", "4.0", "7.0", "5.0005", "0.000001"
+                      # To turn this safety feature off, leave this empty
+                      hold_trade_above_price:
+
+                      # <------ buy ends -------->
+
+                  # <------ sell start -------->
+                  - trade:
+
+                      #### Buy order information
+                      # (ENUM: "buy"|"sell")
+                      name: sell
+
+                      #### (INTEGER) Transaction deadline
+                      # After how many seconds should the transaction timeout incase the swap did not complete
+                      # unit is in milliseconds
+                      # eg: 600000 #(1000 * 60 * 10 = 10 mins), 300000 (1000 * 60 * 5 = 5 mins),
+                      tx_timeout_in_ms: 60000
+
+                      ##### (Option<String>) "APPROVE" Gas fee (GWEI) to make the token transaction
+                      # Gas price refers to the amount of Ether/BNB you are willing to pay for every unit of gas, and this is usually measured in 'gwei', to approve the [token_out_contract].
+                      # This is only done once for approving the token
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Recommended value for sniping or early buy is 15+
+                      # Minimum is "5". The more is better.
+                      # To turn off Approve checks and Auto approve, leave this field empty
+                      approve_gas_price: "15"
+
+                      ##### (Option<INTEGER>) "APPROVE" Gas limit to make the token transaction.
+                      # Gas limit means the MAXIMUM UNITS of gas that is allowed to be consumed on for approving the [token_out_contract]
+                      # To be used along with [approve_gas_price]
+                      # This field is mandatory when [approve_gas_price] is enabled
+                      # eg: 210000, 250000, 300000
+                      # It CANNOT be a decimal
+                      # Minimum limit is 210000. The more is better.
+                      # Recommended Minimum value: 500000
+                      approve_gas_limit: 200000
+
+                      #### (Option<ADDRESS>) The newly purchased token contract that you would like to sell
+                      # For sniping the token leave this field empty, you will be prompted for the input via the CLI, or [token_out_contract] of the Buy function will be picked up automatically incase the primary trade is BuySell
+                      # Warning: This is the sell section.
+                      # The token_in_contract could be some SHIT coin you own and would like to sell at a profit
+                      # eg: Contract address of NFT (0xxxxxxxxxxxxx), DOGE (0xxxxxxxxxxxxx). SWAPZ (0xxxxxxxxxxxxx)
+                      token_in_contract: 0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82
+
+                      #### (STRING) Symbol for the token_in_contract
+                      # We require this field to avoid fetching the symbol from the network thus reducing an extra network request
+                      # eg: NFT, DOGE. SWAPZ
+                      token_in_symbol: "CAKE"
+
+                      #### (ADDRESS) Token contract to exchange to
+                      # Warning: This is the sell section.
+                      # The token_out_contract could be some STABLE coin to which you would like to exchange your token_in
+                      # eg: Contract address of BNB (0xxxxxxxxxxxxx), WBNB (0xxxxxxxxxxxxx)
+                      token_out_contract: 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c
+
+                      #### (STRING) Symbol for the token_out_symbol
+                      # We require this field to avoid fetching the symbol from the network thus reducing an extra network request
+                      # eg: WBNB, BNB
+                      token_out_symbol: "WBNB"
+
+                      ### (Bool) Is the [token_out_contract] deflationary?
+                      # allowed values: true or false
+                      is_token_out_deflationary: false
+
+                      #### (Optional<STRING>) Amount of tokens you would like to sell.
+                      # either of [perc_of_token_in] or [amount_of_token_in] can only be used
+                      # should NOT use this alo
+                      # unit is in token_in
+                      # eg: "2.0", "44.0", "7000.0", "5.0005", "0.000001"
+                      amount_of_token_in:
+
+                      #### (Optional<INTEGER>) Percentage of tokens to sell
+                      # either of [perc_of_token_in] or [amount_of_token_in] can only be used
+                      # CANNOT be a decimal
+                      # eg: 50, 90, 100.
+                      perc_of_token_in: 100
+
+                      #### (INTEGER) (PERCENTAGE) of slippage to make the purchase.
+                      # It should be a positive integer
+                      # eg: 1, 5, 10
+                      # It CANNOT be a decimal
+                      # Recommended value for sniping or early buy is 30+
+                      slippage: 1
+
+                      ##### (String) Gas fee (GWEI) to carry out the trade.
+                      # Gas price refers to the amount of Ether/BNB you are willing to pay for every unit of gas, and this is usually measured in 'gwei'
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Recommended value for sniping or early buy is 15+
+                      # Minimum is 5. The more is better.
+                      gas_price: "10"
+
+                      ##### (INTEGER) Gas limit to make the sell order.
+                      # Gas limit means the MAXIMUM UNITS of gas that is allowed to be consumed on a transaction
+                      # eg: 210000, 250000, 300000
+                      # It CANNOT be a decimal
+                      # Minimum limit is 210000. The more is better.
+                      # Recommended Minimum value: 500000
+                      gas_limit: 300000
+
+                      ##### (Option<Integer>) (Percentage) of gas fees to be increased while making retry attempts.
+                      # Sometimes to carry out a transaction the gas fees wouldn't be enough. So we could keep increasing the gas price on every retry.
+                      # eg: 0, 1, 5, 10, 25, 100
+                      # it should be a POSITIVE integer
+                      # It CANNOT be a decimal
+                      # To keep the gas price fixed, leave this field empty
+                      perc_increase_gas_price: 2
+
+                      ##### (Option<String>) Max Gas price incase we setincase we set [perc_increase_gas_price]
+                      # Maximum value of gas price allowed in case we activate "increased gas price"
+                      # [max_gas_price] should be only used along with [perc_increase_gas_price]
+                      # [max_gas_price] should be greater than or equal to [gas_price]
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Unit is in 'gwei'
+                      max_gas_price: "40"
+
+                      ##### (Optional<INTEGER>) Number of retry attempts to carry out in case of a failed transaction
+                      # We will keep retrying [retry_attempts] number of times before stopping further attempts
+                      # eg: 5, 10, 25
+                      # It CANNOT be a decimal
+                      # For unlimited retries, leave this field empty
+                      retry_attempts: 2
+
+                      ##### (Option<INTEGER>) time interval between each [retry_attempts] in milliseconds
+                      # We will keep retrying [retry_attempts] number of times before stopping further attempts
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      time_between_retries_in_ms: 2000
+
+                      ##### (Option<INTEGER>) Sets a delay before making the first transaction attempt.
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      wait_time_before_first_tx_attempt_in_ms:
+
+                      ##### (Option<INTEGER>) Sets a max allowed time until which the trade is allowed to happen
+                      # this is the time difference between the moment 'the minimum liquidity' is hit and before the next transaction
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      max_allowed_time_for_trading_in_ms: 15000
+
+                      #### (Option<STRING>) Minimum liquidity required to be added in the pair address to make the purchase.
+                      # unit is in BNB
+                      # eg: "2.0", "4.0", "7.0", "5.0005"," 0.000001"
+                      # To skip the minimum liquidity check leave the field empty
+                      min_liquidity_required:
+
+                      #### (Option<STRING>) The price at which the trading should be triggered
+                      # unit is in BNB
+                      # eg: "2.0", "4.0", "7.0", "5.0005", "0.000001"
+                      # For instant trading leave this field empty
+                      trade_at_price:
+
+                      #### (Option<STRING>) The price below which the trade should be put on hold.
+                      # This will only work with the [trade_at_price]
+                      # This is a safety measure to avoid losing money
+                      # unit is in BNB
+                      # eg: "2.0", "4.0", "7.0", "5.0005", "0.000001"
+                      # To turn this safety feature off, leave this empty
+                      hold_trade_below_price:
+
+                      #### (Option<Integer>) (PERCENTAGE) The profit percentage at which the trading should be triggered
+                      # We will try to sell the token at a profit percentage w.r.t to the Buy value.
+                      # this should be ONLY used in the 'BuySell' function
+                      # this should NOT be used along with trade_at_price
+                      # unit is in percentage
+                      # eg: 10, 1, 1.5, 200, 4000
+                      # For instant trading leave this field empty
+                      trade_at_profit_perc:
+
+                      #### (Option<Integer>) (PERCENTAGE) The profit percentageThe profit percentage below which the trade should be put on hold.
+                      # We will try to sell the token at a profit percentage w.r.t to the Buy value.
+                      # This should be used along with the [trade_at_profit_perc]
+                      # this should be ONLY used in the 'BuySell' function
+                      # this should NOT be used along with trade_at_price
+                      # This is a safety measure to avoid losing money
+                      # unit is in percentage
+                      # eg: 10, 1, 1.5, 200, 4000
+                      # To turn this safety feature off, leave this empty
+                      hold_trade_below_profit_perc:
+
+                      # <------ sell ends -------->
+
+          ################################################################################################
+
+          - network:
+              #### BSC Testnet sniping details
+              # (ENUM: "mainnet"|"testnet")
+              name: testnet
+              #### Commonly used token contracts:
+              #   WBNB: 0xae13d989dac2f0debff460ac112a837c89baa7cd
+              #   BUSD: 0x78867BbEeF44f2326bF8DDd1941a4439382EF2A7
+              #   USDT: 0x7ef95a0fee0dd31b22626fa2e10ee6a223f8a684
+              #   PANTEST2: 0xaE4D7eaD1BF5DFd5434EE8c8aE54E366c86da7d6
+              #   PANTEST3: 0xA0b73b27720e0F889f8108DACBe28BfB59631878
+              #   PANTEST4: 0x83329f5ca34127dc175D706DB57D40CF5E9fa587
+              #   PANTEST5: 0xd81D1e803105de9bA0858c5a485C4208fD192949
+              #   PANTEST6: 0xaa0d0bb8aD3BdD33e8ae166be27e0355926478Dc
+              #   PANTEST7: 0x7Aa4e8Ad0a24deBFb37a2BBD9e582C5F74161c98
+              #   PANTESTD1: (deflationary) 0xBa073B24A09260278D084C0B42B9F276e6BC5D73
+
+              # Pancake factory contract
+              factory: 0xb7926c0430afb07aa7defde6da862ae0bde767bc
+
+              # Pancake router contract
+              router: 0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3
+
+              # usd token contract to compare the price
+              usd_token_contract: 0x78867BbEeF44f2326bF8DDd1941a4439382EF2A7
+
+              # native token contract to compare the price (BNB,ETH etc..)
+              native_token_contract: 0xae13d989dac2f0debff460ac112a837c89baa7cd
+
+              # native token symbol. Example: (BNB,ETH etc..)
+              native_token_symbol: BNB
+
+              # List of providers for listening to the crypto network
+              providers:
+                - provider:
+                    name: "prebsc account#1"
+                    api: "wss://data-seed-prebsc-2-s3.binance.org:8545"
+
+                    # (ENUM: "wss")
+                    protocol: "wss"
+
+                - provider:
+                    name: "getblock bsc account#1"
+                    api: "wss://bsc.getblock.io/testnet/?api_key=xxxxxxxxxx"
+
+                    # (ENUM: "wss")
+                    protocol: "wss"
+
+                - provider:
+                    name: "ankr account#1"
+                    api: "wss://apis.ankr.com/wss/xxxxxxxxxx/xxxxxxxxxx/binance/full/test"
+
+                    # (ENUM: "wss")
+                    protocol: "wss"
+
+                - provider:
+                    name: "prebsc account#1"
+                    api: "wss://data-seed-prebsc-2-s3.binance.org:8545"
+
+                    # (ENUM: "wss")
+                    protocol: "wss"
+
+                - provider:
+                    name: "infura ropsten account#1"
+                    api: "wss://ropsten.infura.io/ws/v3/xxxxxxxxxx"
+
+                    # (ENUM: "wss")
+                    protocol: "wss"
+
+                - provider:
+                    name: "ganache account#1"
+                    api: "http://127.0.0.1:8000"
+
+                    # (ENUM: "wss")
+                    protocol: "wss"
+
+              # Checks whether the account has enough gas fees or not
+              check_gas_fees: true
+
+              feature:
+                trades:
+                  - trade:
+                      # <------ buy start -------->
+                      #### Buy order information
+                      # (ENUM: "buy"|"sell")
+                      name: buy
+
+                      #### (INTEGER) Transaction deadline
+                      # After how many seconds should the transaction timeout incase the swap did not complete
+                      # unit is in milliseconds
+                      # eg: 600000 #(1000 * 60 * 10 = 10 mins), 300000 (1000 * 60 * 5 = 5 mins),
+                      tx_timeout_in_ms: 600000
+
+                      ##### (Option<String>) "APPROVE" Gas fee (GWEI) to make the token transaction
+                      # Gas price refers to the amount of Ether/BNB you are willing to pay for every unit of gas, and this is usually measured in 'gwei', to approve the [token_out_contract].
+                      # This is only done once for approving the token
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Recommended value for sniping or early buy is 15+
+                      # Minimum is "5". The more is better.
+                      # To turn off Approve checks and Auto approve, leave this field empty
+                      approve_gas_price: "15"
+
+                      ##### (Option<INTEGER>) "APPROVE" Gas limit to make the token transaction.
+                      # Gas limit means the MAXIMUM UNITS of gas that is allowed to be consumed on for approving the [token_out_contract]
+                      # To be used along with [approve_gas_price]
+                      # This field is mandatory when [approve_gas_price] is enabled
+                      # eg: 210000, 250000, 300000
+                      # It CANNOT be a decimal
+                      # Minimum limit is 210000. The more is better.
+                      # Recommended Minimum value: 500000
+                      approve_gas_limit: 210000
+
+                      #### (ADDRESS) The BASE token contract that you would like to exchange
+                      # The token_in_contract could be some STABLE coin which you own
+                      # eg: Contract address of WNBNB (0xxxxxxxxxxxxx), BNB (0xxxxxxxxxxxxx)
+                      token_in_contract: 0xae13d989dac2f0debff460ac112a837c89baa7cd
+
+                      #### (STRING) Symbol for the token_in_contract
+                      # We require this field to avoid fetching the symbol from the network thus reducing an extra network request
+                      # eg: WBNB
+                      token_in_symbol: "WBNB"
+
+                      #### (Option<ADDRESS>) Token contract to BUY
+                      # For sniping the token leave this field empty, you will be prompted for the input via the CLI
+                      # The token_out_contract could be some SHIT coin that you would like to purchase
+                      # eg: Contract address of NFT (0xxxxxxxxxxxxx), DOGE (0xxxxxxxxxxxxx). SWAPZ (0xxxxxxxxxxxxx)
+                      token_out_contract: 0x78867BbEeF44f2326bF8DDd1941a4439382EF2A7
+
+                      #### (STRING) Symbol for the token_out_contract
+                      # We require this field to avoid fetching the symbol from the network thus reducing an extra network request
+                      # eg: NFT, DOGE. SWAPZ
+                      token_out_symbol: "BUSD"
+
+                      ### (Bool) Is the [token_out_contract] deflationary?
+                      # allowed values: true or false
+                      is_token_out_deflationary: false
+
+                      #### (STRING) Amount of tokens you would like to spend on making the purchase.
+                      # unit is in token_in
+                      # eg: "2.0", "44.0", "7000.0", "5.0005", "0.000001"
+                      amount_of_token_in: "0.0005"
+
+                      #### (INTEGER) (PERCENTAGE) of slippage to make the purchase.
+                      # It should be a positive integer
+                      # eg: 1, 5, 10
+                      # It CANNOT be a decimal
+                      # Recommended value for sniping or early buy is 30+
+                      slippage: 1
+
+                      ##### (String) Gas fee (GWEI) to carry out the trade.
+                      # Gas price refers to the amount of Ether/BNB you are willing to pay for every unit of gas, and this is usually measured in 'gwei'
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Recommended value for sniping or early buy is 15+
+                      # Minimum is 5. The more is better.
+                      gas_price: "10"
+
+                      ##### (INTEGER) Gas limit to make the purchase.
+                      # Gas limit means the MAXIMUM UNITS of gas that is allowed to be consumed on a transaction
+                      # eg: 210000, 250000, 300000
+                      # It CANNOT be a decimal
+                      # Minimum limit is 210000. The more is better.
+                      # Recommended Minimum value: 500000
+                      gas_limit: 500000
+
+                      ##### (Option<Integer>) (Percentage) of gas fees to be increased while making retry attempts.
+                      # Sometimes to carry out a transaction the gas fees wouldn't be enough. So we could keep increasing the gas price on every retry.
+                      # eg: 0, 1, 5, 10, 25, 100
+                      # it should be a POSITIVE integer
+                      # It CANNOT be a decimal
+                      # To keep the gas price fixed, leave this field empty
+                      perc_increase_gas_price: 2
+
+                      ##### (Option<String>) Max Gas price incase we setincase we set [perc_increase_gas_price]
+                      # Maximum value of gas price allowed in case we activate "increased gas price"
+                      # [max_gas_price] should be only used along with [perc_increase_gas_price]
+                      # [max_gas_price] should be greater than or equal to [gas_price]
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Unit is in 'gwei'
+                      max_gas_price: "20"
+
+                      ##### (Optional<INTEGER>) Number of retry attempts to carry out in case of a failed transaction
+                      # We will keep retrying [retry_attempts] number of times before stopping further attempts
+                      # eg: 5, 10, 25
+                      # It CANNOT be a decimal
+                      # For unlimited retries, leave this field empty
+                      retry_attempts: 5
+
+                      ##### (Option<INTEGER>) time interval between each [retry_attempts] in milliseconds
+                      # We will keep retrying [retry_attempts] number of times before stopping further attempts
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      time_between_retries_in_ms: 2000
+
+                      ##### (Option<INTEGER>) Sets a delay before making the first transaction attempt.
+                      # this is the time difference between the moment 'the minimum liquidity' is hit and before the first transaction that has to be carried out
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      wait_time_before_first_tx_attempt_in_ms: 8000
+
+                      ##### (Option<INTEGER>) Sets a max allowed time until which the trade is allowed to happen
+                      # this is the time difference between the moment 'the minimum liquidity' is hit and before the next transaction
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      max_allowed_time_for_trading_in_ms:
+
+                      #### (Option<STRING>) Minimum liquidity required to be added in the pair address to make the purchase.
+                      # unit is in USD
+                      # eg: "2.0", "4.0", "7.0", "5.0005"," 0.000001"
+                      # To skip the minimum liquidity check leave the field empty
+                      min_liquidity_required: "0.0005"
+
+                      #### (Option<STRING>) The price at which the trading should be triggered
+                      # unit is in USD
+                      # eg: "2.0", "4.0", "7.0", "5.0005", "0.000001"
+                      # For instant trading leave this field empty
+                      trade_at_price: "0.00005"
+
+                      #### (Option<STRING>) The price above which the trade should be put on hold.
+                      # This is a safety measure to avoid losing money
+                      # unit is in BNB
+                      # eg: "2.0", "4.0", "7.0", "5.0005", "0.000001"
+                      # To turn this safety feature off, leave this empty
+                      hold_trade_above_price: "2.0"
+
+                      # <------ buy ends -------->
+
+                  - trade:
+                      # <------ sell start -------->
+
+                      #### Buy order information
+                      # (ENUM: "buy"|"sell")
+                      name: sell
+
+                      #### (INTEGER) Transaction deadline
+                      # After how many seconds should the transaction timeout incase the swap did not complete
+                      # unit is in milliseconds
+                      # eg: 600000 #(1000 * 60 * 10 = 10 mins), 300000 (1000 * 60 * 5 = 5 mins),
+                      tx_timeout_in_ms: 600000
+
+                      ##### (Option<String>) "APPROVE" Gas fee (GWEI) to make the token transaction
+                      # Gas price refers to the amount of Ether/BNB you are willing to pay for every unit of gas, and this is usually measured in 'gwei', to approve the [token_out_contract].
+                      # This is only done once for approving the token
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Recommended value for sniping or early buy is 15+
+                      # Minimum is "5". The more is better.
+                      # To turn off Approve checks and Auto approve, leave this field empty
+                      approve_gas_price: "15"
+
+                      ##### (Option<INTEGER>) "APPROVE" Gas limit to make the token transaction.
+                      # Gas limit means the MAXIMUM UNITS of gas that is allowed to be consumed on for approving the [token_out_contract]
+                      # To be used along with [approve_gas_price]
+                      # This field is mandatory when [approve_gas_price] is enabled
+                      # eg: 210000, 250000, 300000
+                      # It CANNOT be a decimal
+                      # Minimum limit is 210000. The more is better.
+                      # Recommended Minimum value: 500000
+                      approve_gas_limit: 210000
+
+                      #### (Option<ADDRESS>) The newly purchased token contract that you would like to sell
+                      # For sniping the token leave this field empty, you will be prompted for the input via the CLI, or [token_out_contract] of the Buy function will be picked up automatically incase the primary trade is BuySell
+                      # Warning: This is the sell section.
+                      # The token_in_contract could be some SHIT coin you own and would like to sell at a profit
+                      # eg: Contract address of NFT (0xxxxxxxxxxxxx), DOGE (0xxxxxxxxxxxxx). SWAPZ (0xxxxxxxxxxxxx)
+                      token_in_contract: 0x78867BbEeF44f2326bF8DDd1941a4439382EF2A7
+
+                      #### (STRING) Symbol for the token_in_contract
+                      # We require this field to avoid fetching the symbol from the network thus reducing an extra network request
+                      # eg: NFT, DOGE. SWAPZ
+                      token_in_symbol: "BUSD"
+
+                      #### (ADDRESS) Token contract to exchange to
+                      # Warning: This is the sell section.
+                      # The token_out_contract could be some STABLE coin to which you would like to exchange your token_in
+                      # eg: Contract address of BNB (0xxxxxxxxxxxxx), WBNB (0xxxxxxxxxxxxx)
+                      token_out_contract: 0xae13d989dac2f0debff460ac112a837c89baa7cd
+
+                      #### (STRING) Symbol for the token_out_symbol
+                      # We require this field to avoid fetching the symbol from the network thus reducing an extra network request
+                      # eg: WBNB, BNB
+                      token_out_symbol: "WBNB"
+
+                      ### (Bool) Is the [token_out_contract] deflationary?
+                      # allowed values: true or false
+                      is_token_out_deflationary: false
+
+                      #### (Optional<STRING>) Amount of tokens you would like to sell.
+                      # either of [perc_of_token_in] or [amount_of_token_in] can only be used
+                      # unit is in token_in
+                      # eg: "2.0", "44.0", "7000.0", "5.0005", "0.000001"
+                      amount_of_token_in:
+
+                      #### (Optional<INTEGER>) (PERCENTAGE) of tokens to sell
+                      # either of [perc_of_token_in] or [amount_of_token_in] can only be used
+                      # It should be a positive integer
+                      # CANNOT be a decimal
+                      # eg: 50, 90, 100.
+                      perc_of_token_in: 100
+
+                      #### (INTEGER) (PERCENTAGE) of slippage to make the purchase.
+                      # It should be a positive integer
+                      # eg: 1, 5, 10
+                      # It CANNOT be a decimal
+                      # Recommended value for sniping or early buy is 30+
+                      slippage: 1
+
+                      ##### (String) Gas fee (GWEI) to carry out the trade.
+                      # Gas price refers to the amount of Ether/BNB you are willing to pay for every unit of gas, and this is usually measured in 'gwei'
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Recommended value for sniping or early buy is 15+
+                      # Minimum is 5. The more is better.
+                      gas_price: "25"
+
+                      ##### (INTEGER) Gas limit to make the sell order.
+                      # Gas limit means the MAXIMUM UNITS of gas that is allowed to be consumed on a transaction
+                      # eg: 210000, 250000, 300000
+                      # It CANNOT be a decimal
+                      # Minimum limit is 210000. The more is better.
+                      # Recommended Minimum value: 500000
+                      gas_limit: 500000
+
+                      ##### (Option<Integer>) (Percentage) of gas fees to be increased while making retry attempts.
+                      # Sometimes to carry out a transaction the gas fees wouldn't be enough. So we could keep increasing the gas price on every retry.
+                      # eg: 0, 1, 5, 10, 25, 100
+                      # it should be a POSITIVE integer
+                      # It CANNOT be a decimal
+                      # To keep the gas price fixed, leave this field empty
+                      perc_increase_gas_price: 50
+
+                      ##### (Option<String>) Max Gas price incase we setincase we set [perc_increase_gas_price]
+                      # Maximum value of gas price allowed in case we activate "increased gas price"
+                      # [max_gas_price] should be only used along with [perc_increase_gas_price]
+                      # [max_gas_price] should be greater than or equal to [gas_price]
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      # Unit is in 'gwei'
+                      max_gas_price: "40"
+
+                      ##### (Optional<INTEGER>) Number of retry attempts to carry out in case of a failed transaction
+                      # We will keep retrying [retry_attempts] number of times before stopping further attempts
+                      # eg: 5, 10, 25
+                      # It CANNOT be a decimal
+                      # For unlimited retries, leave this field empty
+                      retry_attempts:
+
+                      ##### (Option<INTEGER>) time interval between each [retry_attempts] in milliseconds
+                      # We will keep retrying [retry_attempts] number of times before stopping further attempts
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      time_between_retries_in_ms: 2000
+
+                      ##### (Option<INTEGER>) Sets a delay before making the first transaction attempt.
+                      # this is the time difference between the moment 'the minimum liquidity' is hit and before the first transaction that has to be carried out
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      wait_time_before_first_tx_attempt_in_ms: 7000
+
+                      ##### (Option<INTEGER>) Sets a max allowed time until which the trade is allowed to happen
+                      # this is the time difference between the moment 'the minimum liquidity' is hit and before the next transaction
+                      # eg: 5000, 10000, 25000
+                      # It CANNOT be a decimal
+                      # unit is in milliseconds
+                      # eg: 1000 (1 second)
+                      # to turn this off leave this field empty
+                      max_allowed_time_for_trading_in_ms:
+
+                      #### (Option<STRING>) Minimum liquidity required to be added in the pair address to make the purchase.
+                      # unit is in BNB
+                      # eg: "2.0", "4.0", "7.0", "5.0005"," 0.000001"
+                      # To skip the minimum liquidity check leave the field empty
+                      min_liquidity_required: "0.0000000001"
+
+                      #### (Option<STRING>) The price at which the trading should be triggered
+                      # unit is in USD
+                      # eg: "2.0", "4.0", "7.0", "5.0005", "0.000001"
+                      # For instant trading leave this field empty
+                      trade_at_price: "0.005"
+
+                      #### (Option<STRING>) The price below which the trade should be put on hold.
+                      # This will only work with the [trade_at_price]
+                      # This is a safety measure to avoid losing money
+                      # unit is in USD
+                      # eg: "2.0", "4.0", "7.0", "5.0005", "0.000001"
+                      # To turn this safety feature off, leave this empty
+                      hold_trade_below_price: "2.0"
+
+                      #### (Option<Integer>) (PERCENTAGE) The profit percentage at which the trading should be triggered
+                      # We will try to sell the token at a profit percentage w.r.t to the Buy value.
+                      # this should be ONLY used in the 'BuySell' function
+                      # this should NOT be used along with trade_at_price
+                      # unit is in percentage
+                      # It CANNOT be a decimal
+                      # eg: 10, 1, 1.5, 200, 4000
+                      # For instant trading leave this field empty
+                      trade_at_profit_perc:
+
+                      #### (Option<Integer>) (PERCENTAGE) The profit percentageThe profit percentage below which the trade should be put on hold.
+                      # We will try to sell the token at a profit percentage w.r.t to the Buy value.
+                      # This should be used along with the [trade_at_profit_perc]
+                      # this should be ONLY used in the 'BuySell' function
+                      # this should NOT be used along with trade_at_price
+                      # This is a safety measure to avoid losing money
+                      # unit is in percentage
+                      # It CANNOT be a decimal
+                      # eg: 10, 1, 1.5, 200, 4000
+                      # To turn this safety feature off, leave this empty
+                      hold_trade_below_profit_perc:
+
+                      # <------ sell ends -------->
+
+                ### todo
+                token_transfers:
+                  - token_transfer:
+                      #### (ADDRESS) Recipient wallet address
+                      # Enter the beneficiary's wallet address
+                      # eg: 0xxxxxxxxxxxxx
+                      recipient_wallet_address: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+                      # title to identify the recipient account
+                      wallet_name: "Recipient testing account"
+
+                      #### (STRING) Amount of tokens you would like to transfer to the recipient.
+                      # unit is in token_in
+                      # eg: "2.0", "44.0", "7000.0", "5.0005", "0.000001"
+                      amount_of_tokens: "0.0005"
+
+                      ##### (Option<String>) Gas fee (GWEI) to carry out the transaction.
+                      # Gas price refers to the amount of Ether/BNB you are willing to pay for every unit of gas, and this is usually measured in 'gwei'
+                      # eg: "5.0", "14", "20.0", "5.5", "15"
+                      gas_price: "10"
+
+                      ##### (Option<INTEGER>) Gas limit to make the transaction.
+                      # Gas limit means the MAXIMUM UNITS of gas that is allowed to be consumed on a transaction
+                      # eg: 210000, 250000, 300000
+                      # It CANNOT be a decimal
+                      gas_limit: 500000
+
+                      # <------ token transfer ends -------->

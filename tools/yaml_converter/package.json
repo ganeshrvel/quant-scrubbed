@@ -1,0 +1,17 @@
+{
+  "name": "yaml_converter",
+  "version": "0.0.1",
+  "description": "yaml_converter",
+  "main": "src/index.js",
+  "license": "ISC",
+  "private": true,
+  "scripts": {
+  },
+  "dependencies": {
+	"js-yaml": "^4.1.0",
+	"command-line-args": "^5.1.1"
+  },
+  "devDependencies": {
+	"yarn": "^1.9.2"
+  }
+}

@@ -1,0 +1,44 @@
+[package]
+name = "quant"
+version = "0.1.0"
+edition = "2018"
+authors = ["Ganesh Rathinavel<ganeshrvel@outlook.com>"]
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = { version = "^1.0", features = ["derive"] }
+serde_yaml = "^0.8"
+serde_json = "^1.0.64"
+serde_derive = "^1.0.126"
+tokio = { version = "^1", features = ["full"] }
+ethers = { git = "https://github.com/gakonst/ethers-rs", rev = "746d8b7bf25e20bb01c890eb94431e485da27e3a" }
+log = "^0.4.14"
+fern = { version = "^0.6.0", features = ["colored"] }
+chrono = "^0.4.19"
+anyhow = "^1.0.42"
+dialoguer = "^0.8.0"
+qd = { git = "https://github.com/ganeshrvel/qd" }
+thiserror = "^1.0.26"
+clap = "^3.0.0-beta.2"
+min-max = "^0.1.8"
+cancellable-timer = "^0.1.0"
+text_io = "0.1.9"
+tokio-tungstenite = "0.15.0"
+headers = "0.3.4"
+async-std = "1.9.0"
+# futures = "0.3.16"
+#prettytable-rs = "^0.8"
+#device_query = { git = "https://github.com/ganeshrvel/device_query", rev = "3a3034663343840fdf126527424c393413239d71" }
+#keybind = "0.1.0"
+#duplicate = "0.3.0"
+#derive_builder = "0.10.2"
+#hex = "0.4.3"
+#sha3 = "^0.9.1"
+#ethabi = "^14.1.0"
+
+
+[dev-dependencies]
+rusty-hook = "^0.11.2"
+
