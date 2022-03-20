@@ -102,7 +102,7 @@ $ node ./tools/yaml_converter --inputfile=sample.secrets.yaml
     
 **OR** simple run `./scripts/build-release.sh`
 
-# Warranty
+### Warranty
 Read the [license](https://github.com/ganeshrvel/quant-scrubbed/blob/master/LICENSE "GPLv3 License") carefully. The license makes it clear that the project is offered "as-is", without warranty, and disclaiming liability for damages resulting from using this project.
 
 ### Contribute
